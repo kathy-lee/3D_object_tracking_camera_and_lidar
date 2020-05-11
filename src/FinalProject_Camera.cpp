@@ -97,7 +97,7 @@ int main(int argc, const char *argv[])
             dataBuffer.erase(dataBuffer.begin());
         }
 
-        cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
+        cout << "\n#1 : LOAD IMAGE INTO BUFFER done" << endl;
 
 
         /* DETECT & CLASSIFY OBJECTS */
@@ -110,7 +110,7 @@ int main(int argc, const char *argv[])
 
         cout << "#2 : DETECT & CLASSIFY OBJECTS done" << endl;
         for(auto it1=(dataBuffer.end() - 1)->boundingBoxes.begin(); it1!=(dataBuffer.end() - 1)->boundingBoxes.end(); ++it1)
-            cout << "boundingbox:" << it1->boxID << it1->roi.tl() << it1->roi.size() << endl;
+            cout << "boundingbox " << it1->boxID  << ":" << it1->roi.tl() << it1->roi.size() << endl;
         /* CROP LIDAR POINTS */
 
         // load 3D Lidar points from file
@@ -133,7 +133,7 @@ int main(int argc, const char *argv[])
         // associate Lidar points with camera-based ROI
         float shrinkFactor = 0.10; // shrinks each bounding box by the given percentage to avoid 3D object merging at the edges of an ROI
         clusterLidarWithROI((dataBuffer.end()-1)->boundingBoxes, (dataBuffer.end() - 1)->lidarPoints, shrinkFactor, P_rect_00, R_rect_00, RT);
-        cout << (dataBuffer.end()-1)->boundingBoxes.size() << endl;
+        //cout << (dataBuffer.end()-1)->boundingBoxes.size() << endl;
         // Visualize 3D objects
         bVis = true;
         if(bVis)
@@ -255,7 +255,8 @@ int main(int argc, const char *argv[])
                         prevBB = &(*it2);
                     }
                 }
-
+                cout << "prepare to compute TTC: " << prevBB->boxID << "," << currBB->boxID << endl;
+                cout << "points size: " << currBB->lidarPoints.size() << "," << prevBB->lidarPoints.size() << endl;
                 // compute TTC for current match
                 if( currBB->lidarPoints.size()>0 && prevBB->lidarPoints.size()>0 ) // only compute TTC if we have Lidar points
                 {

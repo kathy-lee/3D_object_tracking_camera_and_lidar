@@ -108,8 +108,8 @@ void show3DObjects(std::vector<BoundingBox> &boundingBoxes, cv::Size worldSize, 
         putText(topviewImg, str1, cv::Point2f(left-250, bottom+50), cv::FONT_ITALIC, 2, currColor);
         sprintf(str2, "xmin=%2.2f m, yw=%2.2f m", xwmin, ywmax-ywmin);
         putText(topviewImg, str2, cv::Point2f(left-250, bottom+125), cv::FONT_ITALIC, 2, currColor); 
-        cout << "boundingbox:" << it1->roi.tl() << it1->roi.size() << endl;
-        cout << i << "th bbox" <<top << " "<< bottom << " " << left << " " << right<<endl;
+        //cout << "boundingbox:" << it1->roi.tl() << it1->roi.size() << endl;
+        //cout << i << "th bbox" <<top << " "<< bottom << " " << left << " " << right<<endl;
         i++;
     }
 
@@ -137,7 +137,12 @@ void show3DObjects(std::vector<BoundingBox> &boundingBoxes, cv::Size worldSize, 
 // associate a given bounding box with the keypoints it contains
 void clusterKptMatchesWithROI(BoundingBox &boundingBox, std::vector<cv::KeyPoint> &kptsPrev, std::vector<cv::KeyPoint> &kptsCurr, std::vector<cv::DMatch> &kptMatches)
 {
-    // ...
+    for(auto match: kptMatches)
+    {
+        if(boundingBox.roi.contains(kptsCurr[match.trainIdx].pt))
+            boundingBox.kptMatches.push_back(match);
+    }
+    
 }
 
 
@@ -183,7 +188,7 @@ void computeTTCCamera(std::vector<cv::KeyPoint> &kptsPrev, std::vector<cv::KeyPo
         return;
     }
 
-    // using meanDistRatio)
+    // using meanDistRatio
     std::sort(distRatios.begin(), distRatios.end());
     long medIndex = floor(distRatios.size() / 2.0);
     double medDistRatio = distRatios.size() % 2 == 0 ? (distRatios[medIndex - 1] + distRatios[medIndex]) / 2.0 : distRatios[medIndex]; // compute median dist. ratio to remove outlier influence
