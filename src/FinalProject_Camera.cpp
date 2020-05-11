@@ -92,6 +92,10 @@ int main(int argc, const char *argv[])
         DataFrame frame;
         frame.cameraImg = img;
         dataBuffer.push_back(frame);
+        if(dataBuffer.size() > dataBufferSize)
+        {
+            dataBuffer.erase(dataBuffer.begin());
+        }
 
         cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
 
@@ -99,13 +103,14 @@ int main(int argc, const char *argv[])
         /* DETECT & CLASSIFY OBJECTS */
 
         float confThreshold = 0.2;
-        float nmsThreshold = 0.4;        
+        float nmsThreshold = 0.4;  
+        bVis = false;      
         detectObjects((dataBuffer.end() - 1)->cameraImg, (dataBuffer.end() - 1)->boundingBoxes, confThreshold, nmsThreshold,
                       yoloBasePath, yoloClassesFile, yoloModelConfiguration, yoloModelWeights, bVis);
 
         cout << "#2 : DETECT & CLASSIFY OBJECTS done" << endl;
-
-
+        for(auto it1=(dataBuffer.end() - 1)->boundingBoxes.begin(); it1!=(dataBuffer.end() - 1)->boundingBoxes.end(); ++it1)
+            cout << "boundingbox:" << it1->boxID << it1->roi.tl() << it1->roi.size() << endl;
         /* CROP LIDAR POINTS */
 
         // load 3D Lidar points from file
@@ -118,7 +123,8 @@ int main(int argc, const char *argv[])
         cropLidarPoints(lidarPoints, minX, maxX, maxY, minZ, maxZ, minR);
     
         (dataBuffer.end() - 1)->lidarPoints = lidarPoints;
-
+        //bVis = true;
+        //showLidarTopview(lidarPoints,cv::Size(4.0, 20.0), cv::Size(900, 900), bVis);
         cout << "#3 : CROP LIDAR POINTS done" << endl;
 
 
@@ -127,12 +133,12 @@ int main(int argc, const char *argv[])
         // associate Lidar points with camera-based ROI
         float shrinkFactor = 0.10; // shrinks each bounding box by the given percentage to avoid 3D object merging at the edges of an ROI
         clusterLidarWithROI((dataBuffer.end()-1)->boundingBoxes, (dataBuffer.end() - 1)->lidarPoints, shrinkFactor, P_rect_00, R_rect_00, RT);
-
+        cout << (dataBuffer.end()-1)->boundingBoxes.size() << endl;
         // Visualize 3D objects
         bVis = true;
         if(bVis)
         {
-            show3DObjects((dataBuffer.end()-1)->boundingBoxes, cv::Size(4.0, 20.0), cv::Size(2000, 2000), true);
+            show3DObjects((dataBuffer.end()-1)->boundingBoxes, cv::Size(4.0, 20.0), cv::Size(900, 900), bVis);
         }
         bVis = false;
 
@@ -140,7 +146,7 @@ int main(int argc, const char *argv[])
         
         
         // REMOVE THIS LINE BEFORE PROCEEDING WITH THE FINAL PROJECT
-        continue; // skips directly to the next image without processing what comes beneath
+        //continue; // skips directly to the next image without processing what comes beneath
 
         /* DETECT IMAGE KEYPOINTS */
 
