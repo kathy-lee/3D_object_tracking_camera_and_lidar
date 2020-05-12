@@ -235,34 +235,6 @@ void computeTTCLidar(std::vector<LidarPoint> &lidarPointsPrev,
     currx = currx/lidarPointsCurr.size();
     TTC = currx / frameRate / (prevx - currx);
 
-    // float min_px, min_cx;
-    // int p_size = ppx.size();
-    // int c_size = pcx.size();
-    // if(p_size > 0 && c_size > 0)
-    // {
-    //     for(int i=0; i<p_size; i++)
-    //     {
-    //         min_px += ppx[i];
-    //     }
-
-    //     for(int j=0; j<c_size; j++)
-    //     {
-    //         min_cx += pcx[j];
-    //     }
-    // }
-    // else 
-    // {
-    //     TTC = NAN;
-    //     return;
-    // }
-
-    // min_px = min_px /p_size;
-    // min_cx = min_cx /c_size;
-    // std::cout<<"lidar_min_px:"<<min_px<<std::endl;
-    // std::cout<<"lidar_min_cx:"<<min_cx<<std::endl;
-
-    // float dt = 1/frameRate;
-    // TTC = min_cx * dt / (min_px - min_cx);
 }
 
 
