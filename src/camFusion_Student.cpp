@@ -137,12 +137,30 @@ void show3DObjects(std::vector<BoundingBox> &boundingBoxes, cv::Size worldSize, 
 // associate a given bounding box with the keypoints it contains
 void clusterKptMatchesWithROI(BoundingBox &boundingBox, std::vector<cv::KeyPoint> &kptsPrev, std::vector<cv::KeyPoint> &kptsCurr, std::vector<cv::DMatch> &kptMatches)
 {
+    std::vector<cv::DMatch> matches;
+    std::vector<double> distances;
+    
     for(auto match: kptMatches)
     {
-        if(boundingBox.roi.contains(kptsCurr[match.trainIdx].pt))
-            boundingBox.kptMatches.push_back(match);
+        if(boundingBox.roi.contains(kptsCurr.at(match.trainIdx).pt))
+        {
+            matches.push_back(match);
+            double d = cv::norm(kptsCurr.at(match.trainIdx).pt - kptsPrev.at(match.queryIdx).pt);
+            distances.push_back(d);
+        }      
     }
-    
+    if(distances.size() > 0)
+    {
+        double meanDist = accumulate( distances.begin(), distances.end(), 0.0 )/distances.size();
+        //vector<int>::iterator it = std::find_if(distances.begin(), distances.end(), [](int i){return i < meanDist;});
+        for(size_t i = 0; i < distances.size(); i++)
+        {
+            if(distances.at(i) < meanDist)
+                boundingBox.kptMatches.push_back(matches.at(i));
+        }
+    }
+    else
+        return;   
 }
 
 
@@ -200,24 +218,51 @@ void computeTTCCamera(std::vector<cv::KeyPoint> &kptsPrev, std::vector<cv::KeyPo
 void computeTTCLidar(std::vector<LidarPoint> &lidarPointsPrev,
                      std::vector<LidarPoint> &lidarPointsCurr, double frameRate, double &TTC)
 {
-
-    double minXPrev = 1e9, minXCurr = 1e9;
+    double prevx = 0;
+    double currx = 0;
+    //double minXPrev = 1e9, minXCurr = 1e9;
     for (auto it = lidarPointsPrev.begin(); it != lidarPointsPrev.end(); ++it)
     {
-
-            minXPrev = minXPrev > it->x ? it->x : minXPrev;
-
+        //minXPrev = minXPrev > it->x ? it->x : minXPrev;
+        prevx = prevx + (it->x);
     }
-
+    prevx = prevx/lidarPointsPrev.size();
     for (auto it = lidarPointsCurr.begin(); it != lidarPointsCurr.end(); ++it)
     {
-
-            minXCurr = minXCurr > it->x ? it->x : minXCurr;
-    
+        //minXCurr = minXCurr > it->x ? it->x : minXCurr;
+        currx = currx + (it->x); 
     }
+    currx = currx/lidarPointsCurr.size();
+    TTC = currx / frameRate / (prevx - currx);
 
-    // compute TTC from both measurements
-    TTC = minXCurr / frameRate / (minXPrev - minXCurr);
+    // float min_px, min_cx;
+    // int p_size = ppx.size();
+    // int c_size = pcx.size();
+    // if(p_size > 0 && c_size > 0)
+    // {
+    //     for(int i=0; i<p_size; i++)
+    //     {
+    //         min_px += ppx[i];
+    //     }
+
+    //     for(int j=0; j<c_size; j++)
+    //     {
+    //         min_cx += pcx[j];
+    //     }
+    // }
+    // else 
+    // {
+    //     TTC = NAN;
+    //     return;
+    // }
+
+    // min_px = min_px /p_size;
+    // min_cx = min_cx /c_size;
+    // std::cout<<"lidar_min_px:"<<min_px<<std::endl;
+    // std::cout<<"lidar_min_cx:"<<min_cx<<std::endl;
+
+    // float dt = 1/frameRate;
+    // TTC = min_cx * dt / (min_px - min_cx);
 }
 
 
