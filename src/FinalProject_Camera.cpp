@@ -159,13 +159,11 @@ int main(int argc, const char *argv[])
         string detectorType = "SHITOMASI";
 
         if (detectorType.compare("SHITOMASI") == 0)
-        {
             detKeypointsShiTomasi(keypoints, imgGray, false);
-        }
-        else
-        {
-            //...
-        }
+        else if(detectorType.compare("HARRIS") == 0)
+            detKeypointsHarris(keypoints, imgGray, false);
+        else 
+            detKeypointsModern(keypoints, imgGray, detectorType, true);  //FAST, BRISK, ORB, AKAZE, SIFT
 
         // optional : limit number of keypoints (helpful for debugging and learning)
         bool bLimitKpts = false;
