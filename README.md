@@ -2,7 +2,6 @@
 
 This is the final project of the camera course. 
 
-<img src="res/myresults_2.gif" width="779" height="414" />
 
 In this final project, four major tasks are completed: 
 1. develop a way to match 3D objects over time by using keypoint correspondences. 
@@ -34,10 +33,16 @@ In this final project, four major tasks are completed:
 3. Compile: `cmake .. && make`
 4. Run it: `./3D_object_tracking`.
 
-FP.5 Performance Evaluation of Lidar_based TTC
+## FP.5 Performance Evaluation of Lidar_based TTC
+
 Lidar points of the preceding vehicle through continous frames:
-<img src="res/myresult.gif" width="450" height="414" />
+
+<img src="res/myresult.gif" width="500" height="500" />
 
 From the lidar points we can see some outliers which may distrub the esimation of TTC. We use mean value along the x-axis to get a stable estimation.
 
-FP.6 Persormance Evaluation of different detector & descriptor combinations and the differences in TTC estimation
+## FP.6 Persormance Evaluation of different detector & descriptor combinations and the differences in TTC estimation
+
+In [this spreadsheet](https://docs.google.com/spreadsheets/d/19DEHwdciBtQtau1gjFtIGvdGDedBvbBlVHXjbYBkEnE/edit?usp=sharing) we used different detector / descriptor combinations and their TTC estimation results based on lidar point cloud and camera images are shown.
+
+<img src="res/myresult_2.gif" />
