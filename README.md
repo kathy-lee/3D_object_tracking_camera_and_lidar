@@ -43,6 +43,10 @@ From the lidar points we can see some outliers which may distrub the esimation o
 
 ## FP.6 Persormance Evaluation of different detector & descriptor combinations and the differences in TTC estimation
 
-In [this spreadsheet](https://docs.google.com/spreadsheets/d/19DEHwdciBtQtau1gjFtIGvdGDedBvbBlVHXjbYBkEnE/edit?usp=sharing) we used different detector / descriptor combinations and their TTC estimation results based on lidar point cloud and camera images are shown.
+In [this spreadsheet](https://docs.google.com/spreadsheets/d/19DEHwdciBtQtau1gjFtIGvdGDedBvbBlVHXjbYBkEnE/edit?usp=sharing) we use different detector / descriptor combinations and their TTC estimation results based on lidar point cloud and camera images are shown, including the mean of TTC estimation sequence, the standard deviation of TTC estimation sequence and the min value of TTC estimation sequence during 18 frames(1.80s). According to the results, the following detector and descriptor combinations have relatively robust estimation results:
+- FAST detector with BRIEF descriptor 
+- FAST detector with FREAK descriptor
+- FAST detector with ORB descriptor
 
 <img src="res/myresult_2.gif" />
+

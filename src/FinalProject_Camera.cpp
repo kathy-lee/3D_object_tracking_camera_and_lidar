@@ -75,7 +75,7 @@ int main(int argc, const char *argv[])
     bool bVis = false;            // visualize results
 
     /* MAIN LOOP OVER ALL IMAGES */
-
+    vector<double> ttcLidarArray, ttcCameraArray;
     for (size_t imgIndex = 0; imgIndex <= imgEndIndex - imgStartIndex; imgIndex+=imgStepWidth)
     {
         /* LOAD IMAGE INTO BUFFER */
@@ -156,7 +156,7 @@ int main(int argc, const char *argv[])
 
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
-        string detectorType = "SHITOMASI";
+        string detectorType = "AKAZE";
 
         if (detectorType.compare("SHITOMASI") == 0)
             detKeypointsShiTomasi(keypoints, imgGray, false);
@@ -188,7 +188,7 @@ int main(int argc, const char *argv[])
         /* EXTRACT KEYPOINT DESCRIPTORS */
 
         cv::Mat descriptors;
-        string descriptorType = "BRISK"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
+        string descriptorType = "FREAK"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
         descKeypoints((dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType);
 
         // push descriptors for current frame to end of data buffer
@@ -269,8 +269,13 @@ int main(int argc, const char *argv[])
                     //// TASK FP.4 -> compute time-to-collision based on camera (implement -> computeTTCCamera)
                     double ttcCamera;
                     clusterKptMatchesWithROI(*currBB, (dataBuffer.end() - 2)->keypoints, (dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->kptMatches);                    
+                    cout << "kptMatches in current box: " << (dataBuffer.end() - 1)->kptMatches.size() << endl;
                     computeTTCCamera((dataBuffer.end() - 2)->keypoints, (dataBuffer.end() - 1)->keypoints, currBB->kptMatches, sensorFrameRate, ttcCamera);
                     //// EOF STUDENT ASSIGNMENT
+
+                    cout << "TTC Lidar: " << ttcLidar << "s, TTC Camera: " << ttcCamera << "s" << endl;
+                    ttcLidarArray.push_back(ttcLidar);
+                    ttcCameraArray.push_back(ttcCamera);
 
                     bVis = true;
                     if (bVis)
@@ -293,10 +298,15 @@ int main(int argc, const char *argv[])
 
                 } // eof TTC computation
             } // eof loop over all BB matches            
-
         }
-
     } // eof loop over all images
+
+    cout << "TTC Lidar:" << endl;
+    for(size_t i = 0; i < ttcLidarArray.size(); i++)
+        cout << ttcLidarArray[i] << endl;
+    cout << "TTC Camera:" << endl;
+    for(size_t i = 0; i < ttcCameraArray.size(); i++)
+        cout << ttcCameraArray[i] << endl;
 
     return 0;
 }
