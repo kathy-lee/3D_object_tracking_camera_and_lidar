@@ -2,7 +2,7 @@
 
 This is the final project of the camera course. 
 
-<img src="res/myresults_2.png" width="779" height="414" />
+<img src="res/myresults_2.gif" width="779" height="414" />
 
 In this final project, four major tasks are completed: 
 1. develop a way to match 3D objects over time by using keypoint correspondences. 
@@ -36,7 +36,7 @@ In this final project, four major tasks are completed:
 
 FP.5 Performance Evaluation of Lidar_based TTC
 Lidar points of the preceding vehicle through continous frames:
-<img src="res/myresult.gif" width="400" height="414" />
+<img src="res/myresult.gif" width="450" height="414" />
 
 From the lidar points we can see some outliers which may distrub the esimation of TTC. We use mean value along the x-axis to get a stable estimation.
 
