@@ -35,13 +35,13 @@ In this final project, four major tasks are completed:
 
 ## FP.1 Match 3D Objects
 
-The idea of matchBoundingBoxes function is to takes as input both the previous and the current data frames and provides as output the ids of the matched regions of interest (i.e. the boxID property). Matches must be the ones with the highest number of keypoint correspondences.
+The idea of matching 3D objects is to takes as input both the previous and the current data frames and provides as output the ids of the matched regions of interest (i.e. the boxID property). Matches must be the ones with the highest number of keypoint correspondences.
 
 Implementation step:
 1. tranverse through each bounding box in the previous frame;
 2. for each bounding box tranverse through all matched keypoint-pairs;
-3. if one keypoint of this matched keypoint-pair is within this bounding box in the previous frame, then tranverse through each bounding box of the current frame to see another keypoint of this matched keypoint-pair is within it or not. If yes, then add one point to the matching score of these two bounding boxes.
-4. when step 2 and step 3 finished, get the ID index with highest score which means best matched with each other.
+3. if one keypoint of this matched keypoint-pair is within this bounding box in the previous frame, then tranverse through each bounding box of the current frame to see another keypoint of this matched keypoint-pair is within it or not. If yes, then add one point to the matching score of these two bounding boxes;
+4. when step 2 and step 3 finished, get the ID index with highest score which means best matched with each other;
 5. add the ID pair of these two matched bounding boxes into result array.
 
 ## FP.2 Compute Lidar-based TTC
@@ -54,8 +54,21 @@ Implementation step:
 
 ## FP.3 Associate Keypoint Correspondences with Bounding Boxes
 
+The idea is to associate a given bounding box with the keypoints it contains.
+
+Implementation step:
+1. tranverse through the matched keypoint-pairs,if a keypoint is within the bounding box, get the norm distance between the two points in the keypoint-pair, add the distance value into an numeric array, add this keypoint-pair into an DMatch array;
+2. to filter out the outliers in keypoint correspondences, get the mean value of this distance array, if the distance between a keypoint-pair is more than the mean value, filter this keypoint-pair out;
+3. put the keypoint-pair array into the kptMatches member of the bounding box.
+
+
 ## FP.4 Compute Camera-based TTC
 
+The implementation step:
+1. tranverse through the keypoint-pair matches of previous frame and current frame, get current keypoint-pair;
+2. tranverse through the keypoint-pair matches of previous frame and current frame again, get next keypoint-pair;
+3. according to these two keypoint-pairs, compute distances and their distance ratio;
+4. after step 1,2,3 finished, compute TTC by using median of distance ratios.
 
 ## FP.5 Performance Evaluation of Lidar_based TTC
 
