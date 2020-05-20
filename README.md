@@ -33,6 +33,30 @@ In this final project, four major tasks are completed:
 3. Compile: `cmake .. && make`
 4. Run it: `./3D_object_tracking`.
 
+## FP.1 Match 3D Objects
+
+The idea of matchBoundingBoxes function is to takes as input both the previous and the current data frames and provides as output the ids of the matched regions of interest (i.e. the boxID property). Matches must be the ones with the highest number of keypoint correspondences.
+
+Implementation step:
+1. tranverse through each bounding box in the previous frame;
+2. for each bounding box tranverse through all matched keypoint-pairs;
+3. if one keypoint of this matched keypoint-pair is within this bounding box in the previous frame, then tranverse through each bounding box of the current frame to see another keypoint of this matched keypoint-pair is within it or not. If yes, then add one point to the matching score of these two bounding boxes.
+4. when step 2 and step 3 finished, get the ID index with highest score which means best matched with each other.
+5. add the ID pair of these two matched bounding boxes into result array.
+
+## FP.2 Compute Lidar-based TTC
+
+Implementation step:
+1. tranverse through each point in the lidar point cloud of the previous frame, sum all the x-cordinate values together, then get its mean value;
+2. tranverse through each point in the lidar point cloud of the current frame, sum all the x-cordinate values together, then get its mean value;
+3. get TTC estimation through equation.
+
+
+## FP.3 Associate Keypoint Correspondences with Bounding Boxes
+
+## FP.4 Compute Camera-based TTC
+
+
 ## FP.5 Performance Evaluation of Lidar_based TTC
 
 Lidar points of the preceding vehicle through continous frames:
